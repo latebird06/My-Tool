@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=IP Purity
+GenericName=Exit IP Reputation Check
+Comment=检查出口 IP 信誉、泄漏线索和网络质量
+Exec=@INSTALL_DIR@/ipcheck_desktop_app.py
+Path=@INSTALL_DIR@
+Icon=local.ipcheck.purity
+Terminal=false
+Categories=Network;Utility;
+StartupNotify=true
+StartupWMClass=IPPurity
+

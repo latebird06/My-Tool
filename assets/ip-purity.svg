@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#3b2b20" flood-opacity=".18"/>
+    </filter>
+  </defs>
+  <rect x="14" y="14" width="228" height="228" rx="54" fill="#fffdfa" filter="url(#shadow)"/>
+  <rect x="49" y="49" width="158" height="158" rx="46" fill="#ff8c42"/>
+  <text x="128" y="151" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="70" font-weight="900" text-anchor="middle">IP</text>
+</svg>
