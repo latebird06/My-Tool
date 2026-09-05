@@ -1,4 +1,21 @@
-# IP Purity
+# My Tool
+
+这个仓库收录适用于 Ubuntu 的轻量桌面工具。各工具相互独立，可按需安装。
+
+## ClamAV Desktop
+
+位于 `clamav-desktop/`，为 ClamAV 提供简洁的中文图形界面和英文桌面入口，支持下载目录、个人文件、指定目录与深度全盘扫描。扫描过程显示真实文件数量和百分比，发现可疑文件时只报告、不自动删除；病毒库默认每天检查更新 4 次。
+
+安装：
+
+```bash
+cd clamav-desktop
+./install.sh
+```
+
+详细说明见 [`clamav-desktop/README.md`](clamav-desktop/README.md)。
+
+## IP Purity
 
 IP Purity 是一个本地运行的出口 IP 信誉与网络旁路诊断工具。软件名和图标使用英文，桌面界面使用中文，视觉风格与 WordSprint 保持一致。
 

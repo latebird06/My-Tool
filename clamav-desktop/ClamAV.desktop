@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=ClamAV
+Comment=选择范围并进行本地病毒扫描
+Exec=@INSTALL_DIR@/clamav_scan_gui.py
+Icon=local.clamav.ManualScan
+Terminal=false
+Categories=System;Security;
+StartupNotify=true
+StartupWMClass=local.clamav.ManualScan
