@@ -1,0 +1,8 @@
+# 本项目仅使用 Python 标准库，无需安装第三方依赖。
+#
+# 依赖清单（均为 CPython 自带）：
+#   tkinter      界面
+#   ctypes       Win32 API（钩子/托盘/热键/剪贴板）
+#   urllib       在线翻译接口
+#
+# 建议 Python 3.10+；已在 Python 3.13.1 / Windows 上验证。
