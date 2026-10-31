@@ -1,129 +1,67 @@
-# 桌面划词翻译
+# My Tool
 
-选中英文 → 松开鼠标 → 自动弹出中文译文。常驻托盘，可随时切换到「挂机」暂停监听。
-纯 Python 标准库实现（tkinter + ctypes），**无需安装任何第三方包**。
+这个仓库收录适用于 Ubuntu 的轻量桌面工具。各工具相互独立，可按需安装。
 
----
+## ClamAV Desktop
 
-## 1. 启动方式
+位于 `clamav-desktop/`，为 ClamAV 提供简洁的中文图形界面和英文桌面入口，支持下载目录、个人文件、指定目录与深度全盘扫描。扫描过程显示真实文件数量和百分比，发现可疑文件时只报告、不自动删除；病毒库默认每天检查更新 4 次。
 
-| 方式 | 说明 |
-| --- | --- |
-| 双击桌面「划词翻译」快捷方式 | 正常使用（无控制台窗口） |
-| `pythonw main.py` | 同上，命令行启动 |
-| `python main.py --debug` | 调试模式，日志同时输出到控制台 |
-| `python main.py --selftest` | 自检（配置/图标/文本处理/剪贴板/引擎），不启动 GUI |
-| `python main.py --smoke` | 冒烟测试：起托盘 3 秒后自动退出 |
+安装：
 
-启动时会弹窗选择 **常驻** 或 **挂机**；勾选「记住选择」后下次直接进入上次的状态。
-托盘右键可随时切换，左键单击快速切换。
-
-## 2. 常驻 vs 挂机
-
-| 状态 | 行为 |
-| --- | --- |
-| 常驻 | 安装全局鼠标钩子 + 注册热键；拖选文字后自动翻译 |
-| 挂机 | 卸载钩子、注销热键；只留托盘图标，CPU 占用≈0 |
-
-## 3. 使用
-
-1. 进入常驻，用鼠标拖选一段英文（浏览器、Word、PDF 阅读器、CAD 说明文字等）；
-2. 松开鼠标后约 0.3 秒，光标旁弹出译文浮窗；
-3. 浮窗可以：**复制译文**、**重新翻译**、**固定**（固定后点击外部不会自动关闭）、拖动标题栏移动位置；
-4. `Esc` 或点击浮窗外部关闭；不点「固定」时点外部即关。
-
-托盘菜单：
-
-- 常驻 / 挂机（单选）
-- 翻译剪贴板内容（热键 `Ctrl+Alt+T`）
-- 测试翻译引擎（逐个探测，结果弹窗）
-- 重新载入配置
-- 打开配置文件夹
-- 退出
-
-## 4. 翻译引擎
-
-按 `config.json` 里 `providers` 的顺序依次尝试，第一个成功的生效：
-
-| 引擎 | 说明 |
-| --- | --- |
-| `bing` | 必应网页翻译（`cn.bing.com`，国内可直连，速度 1~3 秒，长文质量好）**默认主力** |
-| `mymemory` | MyMemory 免费接口，单次 450 字符，作兜底；有每日匿名额度限制 |
-| `google` | Google gtx 接口，仅在能访问 Google 的网络下可用 |
-
-想调整顺序就改 `providers`，例如 `["mymemory", "bing"]`。
-
-## 5. 配置
-
-位置：`%APPDATA%\MouseTranslate\config.json`，改完在托盘点「重新载入配置」即可生效。
-
-| 键 | 默认 | 说明 |
-| --- | --- | --- |
-| `mode` | `"on"` | 上次选择的状态：`on` 常驻 / `idle` 挂机 |
-| `ask_mode_on_start` | `true` | 启动时是否弹选择窗 |
-| `auto_translate` | `true` | 松开鼠标即翻译；`false` 时只响应托盘/热键 |
-| `min_chars` | `4` | 少于该字数的选区忽略 |
-| `max_chars` | `20000` | 超过则截断（浮窗底部会提示） |
-| `min_drag_px` | `6` | 拖动像素阈值，低于该值视为点击 |
-| `cooldown_ms` | `700` | 两次自动翻译的最小间隔 |
-| `skip_if_cjk` | `true` | 中文为主的选区不翻译（避免中译中） |
-| `providers` | `["bing","mymemory","google"]` | 引擎顺序 |
-| `source_lang` | `"auto"` | 源语言，`auto` 自动识别 |
-| `target_lang` | `"zh-CN"` | 目标语言 |
-| `request_timeout_s` | `9` | 单请求超时 |
-| `restore_clipboard` | `true` | 抓取后还原原剪贴板文本 |
-| `popup_width` | `640` | 浮窗宽度（像素） |
-| `popup_max_height` | `560` | 浮窗最大高度（像素） |
-| `font_family` | `"Microsoft YaHei UI"` | 字体 |
-| `font_size_px` | `-15` | 字号（负数=像素） |
-| `cache_size` | `200` | 译文缓存条数 |
-
-日志：`%APPDATA%\MouseTranslate\logs\app.log`（1 MB 滚动，保留 2 份）。
-
-## 6. 已知限制
-
-1. **管理员权限的窗口**（部分 CAD / ANSYS / 以管理员运行的程序）会忽略本程序注入的
-   `Ctrl+C`，需要本程序也以管理员身份运行；
-2. **终端、部分 PDF 阅读器**里 `Ctrl+C` 不是"复制"，抓不到文字（可用
-   `Ctrl+Alt+T` 先自行复制再翻译剪贴板）；
-3. 全屏独占游戏窗口不触发钩子；
-4. 抓取依赖剪贴板：若原剪贴板里是图片/文件（非文本），该内容无法还原；
-5. 免费接口可能被限流或临时失效，用「测试翻译引擎」能立刻看出是哪个引擎的问题；
-6. 首次启动若 Windows 询问网络访问（防火墙），请允许，否则翻译会失败。
-
-## 7. 目录结构
-
-```
-mouse-translate/
-  main.py                 入口（单实例、自检、冒烟）
-  app/
-    config.py             配置读写
-    icons.py              图标生成（纯代码画 ICO）
-    win32api.py           钩子/托盘/热键/剪贴板/SendInput
-    capture.py            选区抓取 + 文本清洗
-    translate.py          必应 / MyMemory / Google 引擎
-    popup.py              翻译浮窗 + 启动选择窗
-    app.py                控制器
-  assets/                 tray_on.ico / tray_off.ico / app.ico
-  tools/
-    make_icons.py         预生成图标
-  install_shortcut.ps1    创建/重建桌面快捷方式
-  启动调试.cmd            带控制台的调试启动
+```bash
+cd clamav-desktop
+./install.sh
 ```
 
-开发期的临时诊断脚本（`debug_*.py`、`test_*.py`）只保留在源码工作副本里，
-发布目录不包含，可随时删除。
+详细说明见 [`clamav-desktop/README.md`](clamav-desktop/README.md)。
 
-## 8. 重建桌面快捷方式
+## IP Purity
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install_shortcut.ps1
-# 开机自启：
-powershell -ExecutionPolicy Bypass -File .\install_shortcut.ps1 -Startup
+IP Purity 是一个本地运行的出口 IP 信誉与网络旁路诊断工具。软件名和图标使用英文，桌面界面使用中文，视觉风格与 WordSprint 保持一致。
+
+## 桌面版
+
+```bash
+git clone git@github.com:latebird06/My-Tool.git
+cd My-Tool
+./install.sh
 ```
 
-## 9. 卸载
+安装完成后可从 Ubuntu 应用菜单搜索 **IP Purity**。安装脚本会复制程序和图标到用户目录，不会覆盖源码仓库；再次执行可安全更新。直接从源码运行也可以使用 `./ipcheck_desktop_app.py`。
 
-1. 托盘右键 → 退出；
-2. 删除 `mouse-translate` 目录、桌面快捷方式；
-3. 删除 `%APPDATA%\MouseTranslate`（配置与日志）。
+当前包含以下模块：
+
+- 自动识别当前 IPv4、IPv6 出口，也可手动检查任意 IPv4/IPv6；
+- IPinfo（失败时使用备用源）、Scamalytics、IPQualityScore、AbuseIPDB；
+- 多源最高风险原则的透明评分，分别展示信誉风险和泄漏风险；
+- IPv4/IPv6 出口地区一致性、本机公网地址与潜在旁路检查；
+- systemd-resolved DNS 路由与解析器地区线索；
+- 系统默认路由的延迟和丢包测量；
+- YouTube、Netflix、Disney+ 的实验性连通性检查；
+- 超时、限流、密钥错误、网络失败和解析格式变化的详细状态。
+
+IPQualityScore 与 AbuseIPDB 是可选数据源，密钥保存在同目录 `config.json`，权限为 `0600`，不会写入检测报告。AbuseIPDB 使用官方 `GET /api/v2/check` 接口；IPQS 密钥放在请求头中，不会出现在 URL。
+
+## 命令行
+
+```bash
+python3 check_ip_purity.py --json
+python3 check_ip_purity.py 8.8.8.8 --json
+python3 check_ip_purity.py 2001:4860:4860::8888 --json
+```
+
+桌面窗口依赖 GTK 3 和 PyGObject（Ubuntu 包 `python3-gi`），检测核心只使用 Python 标准库；本地模块会调用系统自带的 `ip`、`ping` 和 `resolvectl`。
+
+如果安装脚本提示缺少依赖，在 Ubuntu 执行：
+
+```bash
+sudo apt install python3 python3-gi gir1.2-gtk-3.0 iproute2 iputils-ping systemd-resolved
+```
+
+## 结果边界
+
+- 信誉数据库是第三方观测，不能保证一个 IP 永远安全或一定可用。
+- DNS 服务器地区不同只是旁路线索；anycast、加密 DNS 和代理 fake-IP 模式都可能造成合理差异。
+- 本机网卡扫描不能代替浏览器内的 WebRTC ICE/STUN 测试。
+- 平台模块只验证 HTTP 连通和响应，不证明账号地区、片库或视频播放已解锁。
+- 手动检查第三方 IP 时，应用不会拿该 IP 的国家与本机 DNS 做无意义比较。

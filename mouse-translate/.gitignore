@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+*.log
+.selftest-appdata/
+.smoke-appdata/
+.gui-test-appdata/
